@@ -15,6 +15,7 @@ namespace CarSalesSystem.Profiles
             //source -> target
             CreateMap<Car, CarReadDto>();
             CreateMap<CarCreateDto, Car>();
+            CreateMap<CarUpdateDto, Car>();
         }
     }
 }

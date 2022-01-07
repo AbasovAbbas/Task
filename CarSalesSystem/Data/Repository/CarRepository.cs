@@ -16,7 +16,7 @@ namespace CarSalesSystem.Data.Repository
             _context = context;
         }
 
-        public void CreateCar(Car car)
+        public void InsertCar(Car car)
         {
             if(car == null)
             {
@@ -33,10 +33,15 @@ namespace CarSalesSystem.Data.Repository
         {
             return _context.Cars.FirstOrDefault(x => x.Id == id);
         }
-
+        
         public bool SaveChanges()
         {
             return _context.SaveChanges() >= 0;
+        }
+
+        public void UpdateCar(Car car)
+        {
+            _context.Update(car);
         }
     }
 }

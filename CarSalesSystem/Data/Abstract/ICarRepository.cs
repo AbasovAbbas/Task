@@ -11,6 +11,7 @@ namespace CarSalesSystem.Data.Abstract
         bool SaveChanges();
         IEnumerable<Car> GetAllCars();
         Car GetCarById(int id);
-        void CreateCar(Car car);
+        void InsertCar(Car car);
+        void UpdateCar(Car car);
     }
 }
