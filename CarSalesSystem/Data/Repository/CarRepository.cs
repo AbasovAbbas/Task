@@ -34,14 +34,19 @@ namespace CarSalesSystem.Data.Repository
             return _context.Cars.FirstOrDefault(x => x.Id == id);
         }
         
-        public bool SaveChanges()
-        {
-            return _context.SaveChanges() >= 0;
-        }
-
         public void UpdateCar(Car car)
         {
             _context.Update(car);
+        }
+
+        public void RemoveCar(Car car)
+        {
+            _context.Remove(car);
+        }
+
+        public bool SaveChanges()
+        {
+            return _context.SaveChanges() >= 0;
         }
     }
 }

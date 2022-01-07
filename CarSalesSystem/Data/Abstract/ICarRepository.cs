@@ -13,5 +13,6 @@ namespace CarSalesSystem.Data.Abstract
         Car GetCarById(int id);
         void InsertCar(Car car);
         void UpdateCar(Car car);
+        void RemoveCar(Car car);
     }
 }

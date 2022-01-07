@@ -26,7 +26,6 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<CarReadDto>> GetCars()
         {
-            // it is push
             var items = _repo.GetAllCars();
             return Ok(_mapper.Map<IEnumerable<CarReadDto>>(items));
         }
@@ -34,13 +33,14 @@ namespace CarSalesSystem.Controllers
         [HttpGet("{id}", Name = "GetCarById")]
         public ActionResult<CarReadDto> GetCarById(int id)
         {
-            var item = _repo.GetCarById(id);
-            if (item != null)
+            var car = _repo.GetCarById(id);
+            if (car != null)
             {
-                return Ok(_mapper.Map<Car>(item));
+                return Ok(_mapper.Map<Car>(car));
             }
             return NotFound();
         }
+
         [HttpPost]
         public ActionResult<CarReadDto> CreateCar(CarCreateDto carCreateDto)
         {
@@ -51,7 +51,7 @@ namespace CarSalesSystem.Controllers
             return CreatedAtRoute(nameof(GetCarById), new { platformReadDto.Id }, platformReadDto);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult UpdateCar(int id, CarUpdateDto carUpdateDto)
         {
             try
@@ -71,6 +71,27 @@ namespace CarSalesSystem.Controllers
                 _repo.UpdateCar(car);
                 _repo.SaveChanges();
 
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCar(int id)
+        {
+            try
+            {
+                var car = _repo.GetCarById(id);
+                if(car == null)
+                {
+                    return NotFound();
+                }
+
+                _repo.RemoveCar(car);
+                _repo.SaveChanges();
                 return NoContent();
             }
             catch (Exception)
