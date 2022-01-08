@@ -4,6 +4,8 @@ using CarSalesSystem.Dtos;
 using CarSalesSystem.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +19,12 @@ namespace CarSalesSystem.Controllers
     {
         private readonly ICarRepository _repo;
         private readonly IMapper _mapper;
+        private Logger _logger;
         public CarController(ICarRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         [HttpGet]
@@ -44,11 +48,20 @@ namespace CarSalesSystem.Controllers
         [HttpPost]
         public ActionResult<CarReadDto> CreateCar(CarCreateDto carCreateDto)
         {
-            var car = _mapper.Map<Car>(carCreateDto);
-            _repo.InsertCar(car);
-            _repo.SaveChanges();
-            var platformReadDto = _mapper.Map<CarReadDto>(car);
-            return CreatedAtRoute(nameof(GetCarById), new { platformReadDto.Id }, platformReadDto);
+            try
+            {
+                var car = _mapper.Map<Car>(carCreateDto);
+                _repo.InsertCar(car);
+                _repo.SaveChanges();
+                var platformReadDto = _mapper.Map<CarReadDto>(car);
+                return CreatedAtRoute(nameof(GetCarById), new { platformReadDto.Id }, platformReadDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(500);
+            }
+            
         }
 
         [HttpPut("{id}")]
@@ -73,8 +86,9 @@ namespace CarSalesSystem.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.Error(ex.Message);
                 return StatusCode(500);
             }
         }
@@ -94,8 +108,9 @@ namespace CarSalesSystem.Controllers
                 _repo.SaveChanges();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.Error(ex.Message);
                 return StatusCode(500);
             }
             
